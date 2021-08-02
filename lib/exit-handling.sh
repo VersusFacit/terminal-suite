@@ -1,5 +1,5 @@
 
-exit_routine() {
+err_routine () {
   local -r script=${0-unknown}
   local -r exit_status=${1-unknown}
   local -r line_number=${2-unknown}
@@ -13,7 +13,18 @@ exit_routine() {
   exit ${exit_status}
 }
 
-trap 'exit_routine $? ${LINENO} ${FUNCNAME[0]:-${0}}' ERR
+exit_routine() {
+  local -r exit_status="${1}"
+
+  if [ -d "${CLONE_DIR}" ]; then
+    rm -rf "${CLONE_DIR}"
+  fi
+
+  exit ${exit_status}
+}
+
+trap 'err_routine $? ${LINENO} ${FUNCNAME[0]:-${0}}' ERR
+trap 'exit_routine $?' EXIT
 
 set -o errexit
 set -o errtrace

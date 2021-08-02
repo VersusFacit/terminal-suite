@@ -4,9 +4,6 @@ usage() {
   exit 2
 }
 
-# Enter root of script repository to ensure relative path correctness
-cd "$(dirname "$0")"
-
 positional_params=''
 while [ "$#" -gt 0 ]; do
   case "$1" in

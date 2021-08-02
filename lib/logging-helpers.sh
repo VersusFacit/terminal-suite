@@ -34,11 +34,11 @@ very_quiet() {
 }
 
 log_quiet() {
-  run_cmd_with_verbosity '1' "echo ${@}"
+  run_cmd_with_verbosity '1' "echo '${@}'"
 }
 
 log_very_quiet() {
-  run_cmd_with_verbosity '2' "echo ${@}"
+  run_cmd_with_verbosity '2' "echo '${@}'"
 }
 
 #
