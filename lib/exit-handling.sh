@@ -7,10 +7,10 @@ err_routine () {
 
   if [ "${exit_status}" -ne '0' ]; then
     1>&2 echo "${script}: Error in ${func_name} on line ${line_number}"\
-	      "with exit status ${exit_status}"
+      "with exit status ${exit_status}"
   fi
 
-  exit ${exit_status}
+  exit "${exit_status}"
 }
 
 exit_routine() {
@@ -20,7 +20,7 @@ exit_routine() {
     rm -rf "${CLONE_DIR}"
   fi
 
-  exit ${exit_status}
+  exit "${exit_status}"
 }
 
 trap 'err_routine $? ${LINENO} ${FUNCNAME[0]:-${0}}' ERR

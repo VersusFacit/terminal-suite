@@ -1,6 +1,6 @@
 
 clone_solarized_colors() {
-  local -r repo_name="${@}"
+  local -r repo_name="${*}"
   log_info '* Cloning gnome terminal colors solarized repo'
   clone_github_repo "${repo_name}" 'aruhier' "${repo_name}"
 }
@@ -18,15 +18,14 @@ load_terminal_colors() {
 
 install_solarized_terminal_colors() {
   local -r repo_name='gnome-terminal-colors-solarized'
-  local -r cloned_repo_path="${CLONE_DIR}/${repo_name}"
 
-  very_quiet pushd "${CLONE_DIR}"
+  run_very_quiet pushd "${CLONE_DIR}"
   clone_solarized_colors "${repo_name}"
-  very_quiet pushd "${repo_name}"
+  run_very_quiet pushd "${repo_name}"
 
   load_terminal_colors
 
-  very_quiet popd
-  very_quiet popd
+  run_very_quiet popd
+  run_very_quiet popd
 }
 

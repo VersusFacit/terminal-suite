@@ -1,0 +1,12 @@
+powerline   	      fonts
+morhetz     	      gruvbox
+flazz       	      vim-colorschemes
+tpope       	      vim-commentary
+tpope       	      vim-dispatch
+tpope               vim-fugitive
+takac       	      vim-hardtime
+vim-syntastic	      syntastic
+scrooloose          nerdtree
+vim-airline         vim-airline
+vim-airline         vim-airline
+jeffkreeftmeijer    vim-numbertoggle

@@ -1,0 +1,146 @@
+set number
+
+"
+" Colorscheme
+"
+syntax on
+set background=dark
+autocmd! vimenter * colorscheme gruvbox
+set showmatch
+set cursorline
+
+"
+" Nerd tree
+"
+set splitright
+let NERDTreeShowHidden=1
+let NERDTreeIgnore=['\.pyc$', '\~$', '\.swp$']
+let NERDTreeShowLineNumbers=1
+autocmd FileType nerdtree setlocal relativenumber
+
+"
+" Syntax highlighting
+"
+highlight BadWhitespace ctermbg=red guibg=red
+match BadWhitespace /^\t\+/
+match BadWhitespace /\s\+$/
+
+autocmd BufWritePre * :%s/\s\+$//e
+
+"
+" Plugin Management
+"
+execute pathogen#infect()
+
+"
+" Syntastic settings
+"
+
+function! ActivateSyntastic()
+  let g:syntastic_always_populate_loc_list = 1
+  let g:syntastic_auto_loc_list = 1
+  let g:syntastic_check_on_open = 1
+  let g:syntastic_check_on_wq = 0
+
+  set statusline+=%#warningmsg#
+  set statusline+=%{SyntasticStatuslineFlag()}
+  set statusline+=%*
+endfunction
+
+"
+" Specific filetype rules
+"
+function! SetupForShell()
+  set tabstop=2
+  set shiftwidth=2
+  set expandtab
+  set softtabstop=0
+  set autoindent
+  set smarttab
+
+  call ActivateSyntastic()
+  let g:syntastic_python_checkers = ['shellcheck']
+  setlocal commentstring=#\ %s
+endfunction
+
+function! SetupForVim()
+  set tabstop=2
+  set shiftwidth=2
+  set expandtab
+  set softtabstop=0
+  set autoindent
+  set smarttab
+
+  setlocal commentstring=\"\ %s
+endfunction
+
+function! SetupForPython()
+  set tabstop=4
+  set shiftwidth=4
+  set expandtab
+  set softtabstop=0
+  set autoindent
+  set smarttab
+
+  set fileformat=unix
+  let b:comment_leader='#'
+
+  " python autocomplete with virtualenv support
+  python3 'python/enable_virtual_env_autocomplete.py'
+
+  call ActivateSyntastic()
+
+  " vim commentary
+  setlocal commentstring=#\ %s
+
+  " vim jedi
+  let g:jedi#use_tabs_not_buffers = 1
+endfunction
+
+filetype plugin indent on
+au! Filetype python call SetupForPython()
+au! Filetype sh call SetupForShell()
+au! Filetype vim call SetupForVim()
+
+"
+" Enable hardtime
+"
+let g:hardtime_default_on = 1
+let g:hardtime_showmsg = 1
+let g:hardtime_allow_different_key = 1
+
+"
+" Airline font
+"
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_tab_nr = 1
+let g:airline#extensions#tabline#tab_nr_type = 1 " tab number
+let g:airline#extensions#tabline#excludes = ['branches', 'index']
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+
+"
+" Use system clipboard rather than buffer clipboard
+"
+set clipboard^=unnamed,unnamedplus
+
+"
+" Change zt/zb behavior
+"
+set scrolloff=2
+
+"
+" Aliases
+"
+function! SetupCommandAlias(from, to)
+  exec 'cnoreabbrev <expr> '.a:from
+        \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
+        \ .'? ("'.a:to.'") : ("'.a:from.'"))'
+endfunction
+call SetupCommandAlias("W","w")
+call SetupCommandAlias("nt","NERDTree")
+nnoremap ; :
+nnoremap : ;
+vnoremap ; :
+vnoremap : ;
