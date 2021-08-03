@@ -45,6 +45,8 @@ function! ActivateSyntastic()
   set statusline+=%#warningmsg#
   set statusline+=%{SyntasticStatuslineFlag()}
   set statusline+=%*
+
+  let g:syntastic_sh_shellcheck_args = '-e SC1090'
 endfunction
 
 "

@@ -1,3 +1,6 @@
+#!/bin/bash
+
+declare -r CLONE_DIR='./git-tmp'
 
 err_routine () {
   local -r script=${0-unknown}

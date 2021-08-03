@@ -1,3 +1,4 @@
+#!/bin/bash
 
 usage() {
   1>&2 echo "Usage: $0 [-v | -vv | --verbose | --very-verbose]"
@@ -17,7 +18,7 @@ while [ "$#" -gt 0 ]; do
       VERBOSITY='2'
       shift
       ;;
-    -*|--*=) # unsupported flags
+    -*) # unsupported flags
       1>&2 echo "Error: Unsupported flag $1"
       usage
       ;;
