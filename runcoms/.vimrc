@@ -41,12 +41,12 @@ function! ActivateSyntastic()
   let g:syntastic_auto_loc_list = 1
   let g:syntastic_check_on_open = 1
   let g:syntastic_check_on_wq = 0
+  let g:syntastic_error_symbol = "✗"
+  let g:syntastic_warning_symbol = "⚠️"
 
   set statusline+=%#warningmsg#
   set statusline+=%{SyntasticStatuslineFlag()}
   set statusline+=%*
-
-  let g:syntastic_sh_shellcheck_args = '-e SC1090'
 endfunction
 
 "
@@ -62,6 +62,7 @@ function! SetupForShell()
 
   call ActivateSyntastic()
   let g:syntastic_python_checkers = ['shellcheck']
+  let g:syntastic_sh_shellcheck_args = '-e SC1090'
   setlocal commentstring=#\ %s
 endfunction
 
@@ -74,6 +75,25 @@ function! SetupForVim()
   set smarttab
 
   setlocal commentstring=\"\ %s
+endfunction
+
+function! SetupForCplusplus()
+  set tabstop=4
+  set shiftwidth=4
+  set expandtab
+  set softtabstop=0
+  set autoindent
+  set smarttab
+
+  call ActivateSyntastic()
+  let g:syntastic_cpp_checkers = ['gcc']
+  let g:syntastic_cpp_compiler = 'clang++'
+  " https://embeddedartistry.com/blog/2017/05/22/werror-is-not-your-friend/
+  let g:syntastic_cpp_compiler_options = '-std=c++03 -Wall -Wextra -Wpedantic'
+
+  " vim commentary
+  setlocal commentstring=//\ %s
+
 endfunction
 
 function! SetupForPython()
@@ -100,6 +120,8 @@ function! SetupForPython()
 endfunction
 
 filetype plugin indent on
+au! Filetype cpp call SetupForCplusplus()
+au! Filetype hpp call SetupForCplusplus()
 au! Filetype python call SetupForPython()
 au! Filetype sh call SetupForShell()
 au! Filetype vim call SetupForVim()
