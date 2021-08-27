@@ -6,7 +6,7 @@
 declare -r       LIB_DIR='./lib'
 declare -r    PYTHON_DIR='./setup_python'
 declare -r   RUNCOMS_DIR='./runcoms'
-declare -r SOLARIZED_DIR='./solarized_setup'
+declare -r SOLARIZED_DIR='./setup_solarized'
 declare -r       VIM_DIR='./setup_vim'
 
 cd "$(dirname "$0")" || exit 1 # move to dir of this script during runtime
