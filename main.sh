@@ -3,14 +3,13 @@
 #
 # 0. Setup
 #
-declare -r     CLONE_DIR='./git-tmp'
 declare -r       LIB_DIR='./lib'
-declare -r    PYTHON_DIR='./python_setup'
+declare -r    PYTHON_DIR='./setup_python'
 declare -r   RUNCOMS_DIR='./runcoms'
 declare -r SOLARIZED_DIR='./solarized_setup'
-declare -r       VIM_DIR='./vim_setup'
+declare -r       VIM_DIR='./setup_vim'
 
-cd "$(dirname "$0")" # move to location of this script during runtime
+cd "$(dirname "$0")" || exit 1 # move to dir of this script during runtime
 
 source "${LIB_DIR}/setup.sh"
 source "${LIB_DIR}/exit-handling.sh"
