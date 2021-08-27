@@ -193,7 +193,7 @@ alias  gm="git merge"
 alias gcc='gcc -Wall -Wpedantic -Werror'
 alias c3='clang++ --std=c++03 -Wall -Wpedantic'
 alias c11='clang++ --std=c++11 -Wall -Wpedantic'
-alias venv_learning="source ${HOME}/dev/virtual_envs/learning/bin/activate"
+alias venv_learning="source \${HOME}/dev/virtual_envs/learning/bin/activate"
 
 check_for_venv() {
   local -r cmd="${1}"
@@ -218,7 +218,7 @@ check_for_venv() {
   if [ "${params}" = '' ]; then
     "${fp_prefix}/${cmd}"
   else
-    "${fp_prefix}/${cmd}" ${params}
+    "${fp_prefix}/${cmd}" "${params}"
   fi
 }
 
