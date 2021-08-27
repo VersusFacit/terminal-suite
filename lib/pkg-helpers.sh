@@ -7,8 +7,7 @@
 ensure_package_installed() {
   local -r pkg_name="${*}"
 
-  # can't use pipe with --quiet or hit SIGPIPE
-  if grep --quiet "${pkg_name}" <(dpkg -l); then
+  if run_quiet dpkg -s "${pkg_name}"; then
     log_quiet "${pkg_name} is already installed, skipping..."
   else
     sudo apt-get install "${pkg_name}"
