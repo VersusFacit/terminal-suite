@@ -8,10 +8,8 @@ err_routine () {
   local -r line_number=${2-unknown}
   local -r func_name=${3-unknown}
 
-  if [ "${exit_status}" -ne '0' ]; then
-    1>&2 echo "${script}: Error in ${func_name} on line ${line_number}"\
-      "with exit status ${exit_status}"
-  fi
+  1>&2 echo "${script}: Error in ${func_name} on line ${line_number}"\
+    "with exit status ${exit_status}"
 
   exit "${exit_status}"
 }
