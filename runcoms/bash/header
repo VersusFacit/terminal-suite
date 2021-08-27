@@ -1,0 +1,10 @@
+#!/bin/bash -e
+
+if [ -z "$PS1" ]; then
+  return
+fi
+
+if [ "bash" != "${0}" ] && [ "/bin/bash" != "${0}" ]; then
+  1>&2 echo "Denied: Script cannot be invoked on the command line"
+  exit 1
+fi

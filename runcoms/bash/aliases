@@ -1,0 +1,65 @@
+# System utils
+alias       ram='free -m -l -t'
+alias    reboot='sudo /sbin/reboot'
+alias  poweroff='sudo /sbin/poweroff'
+alias  shutdown='sudo /sbin/shutdown'
+
+alias          diff='command diff -W $(( $(tput cols) - 2 ))'
+alias partition-use='df -hlT --exclude-type=tmpfs --exclude-type=devtmpfs'
+alias         flush='sync'
+
+# More verbose commands
+alias chmod='chmod -v'
+alias    mv='mv -v'
+alias    cp='cp -v'
+
+# Corrective aliases
+alias cd..='cd ..'
+alias sl='l'
+alias bim=vim
+alias cim=vim
+
+# Tools
+alias path='printf "${PATH//:/\\n}\n"'
+alias  now='date +"%T"'
+alias tree="find . -print | sed -e 's;[^/]*/;|__;g;s;__|; |;g'"
+alias   ff='find . -name'
+alias bman='bash-man'
+alias   vi='vim'
+alias  svi='sudo vi'
+alias svim='sudo vi'
+
+#
+# ls configuration
+#
+if [ -x /usr/bin/dircolors ]; then
+    if [ -r "$HOME/.dir_colors/dircolors" ]; then
+      eval "$(dircolors -b "$HOME/.dir_colors/dircolors")"
+    fi
+
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+alias  l='ls -C'            # force multiline output
+alias la='ls -A'            # show hidden and regular files
+alias ll='ls -l'            # long format
+
+# Dev tools
+alias todos="ag --nogroup '(TODO|FIX(ME)?)[: ]'"
+
+alias gbr='git branch'
+alias gst='git status'
+alias gco='git checkout'
+
+alias  ga="git add"
+alias gcm="git commit -m"
+alias  gf="git fetch"
+alias  gm="git merge"
+
+# Compiler tools
+alias gcc='gcc -Wall -Wpedantic -Werror'
+alias c3='clang++ --std=c++03 -Wall -Wpedantic'
+alias c11='clang++ --std=c++11 -Wall -Wpedantic'

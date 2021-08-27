@@ -1,0 +1,77 @@
+alias venv_learning="source ${HOME}/dev/virtual_envs/learning/bin/activate"
+
+check_for_venv() {
+  local -r cmd="${1}"
+  shift
+  local -r params="${*}"
+  local fp_prefix
+
+  if [ "${VIRTUAL_ENV}" = "" ]; then
+    read -r -p "Warning: Using user-level pip library. Proceed? [y/Y] " -n 1
+    tput cr
+    tput el
+    if [[ ! "$REPLY" =~ ^[Yy]$ ]]; then
+        return 2
+    fi
+
+    fp_prefix='/usr/bin'
+  else
+    fp_prefix="${VIRTUAL_ENV}/bin"
+  fi
+
+  # necessary because some executables won't accept the empty string
+  if [ "${params}" = '' ]; then
+    "${fp_prefix}/${cmd}"
+  else
+    "${fp_prefix}/${cmd}" ${params}
+  fi
+}
+
+warnful_pip() {
+  check_for_venv 'pip' "$@"
+}
+
+warnful_python() {
+  check_for_venv 'python' "$@"
+}
+
+pip() {
+  warnful_pip "$@"
+}
+
+python() {
+  warnful_python "$@"
+}
+
+bash-man() {
+
+  echo-stderr() {
+    echo "$*" 1>&2
+  }
+
+  usage() {
+    echo-stderr "Usage: bash-man [valid shell builtin]"
+  }
+
+  local cmd
+
+  # ignore quoted whitespace
+  cmd=$( tr -d "[:space:]" <<< "$1" )
+
+  if [ $# -ne 1 ]; then
+    usage
+    return 1
+  fi
+
+  if 2>&1 type "${cmd}" | grep -q "is a shell builtin"; then
+    help "${cmd}" | "${PAGER:-less}"
+  else
+    echo-stderr "Error: '${cmd}' is not a valid shell builtin"
+  fi
+}
+
+cdl() {
+  cd "$@"
+  ls --color=auto
+}
+

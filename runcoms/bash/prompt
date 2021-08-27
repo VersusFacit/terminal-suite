@@ -1,0 +1,55 @@
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+set_bash_prompt() {
+  local -r BLK_BG="\[$(tput setab 0)\]"
+  local -r RED="\[$(tput setaf 1)\]"
+  local -r GRN="\[$(tput setaf 2)\]"
+  local -r CYN="\[$(tput setaf 6)\]"
+  local -r WHT="\[$(tput setaf 7)\]"
+  local -r BLD="\[$(tput bold)\]"
+  local -r CLR="\[$(tput sgr0)\]"
+
+  local len="$(($(tput cols) - 4))" # personal preference on spacing
+
+  local -r header="${WHT}┌$( printf "%${len}s" | sed 's/ /─/g')┐${CLR}"
+  local -r time_stat=" ${RED}${BLD}${BLK_BG}\@${CLR} "
+  local -r jobs_stat="${GRN}${BLD}$(printf " & \j ")${CLR}"
+  local -r dir_stat=" ${GRN}${BLD}\w ${CLR}"
+  local -r exit_stat="$( \
+    if [ "$1" = "0" ]; then \
+      printf "%s%8s%s " "${GRN}${BLD}" '✓  ' "${CLR}"; \
+    else \
+      printf "%s%8s%s " "${RED}${BLD}" "⚠ ${1}" "${CLR}"; \
+    fi )"
+  local -r git_status="${WHT}┕${CYN}${BLD} $(git branch 2>/dev/null | grep '^\*' | colrm 1 2) ${CLR}"
+
+  PS1="$( printf "%s%s%s%s%s\n%s\$ " \
+    "\n${header}\r" \
+    "$(tput cuf 3)${time_stat}" \
+    "$(tput cuf 2)${exit_stat}" \
+    "$(tput cuf 2)${jobs_stat}" \
+    "$(tput cuf 2)${dir_stat}" \
+    "${git_status}"
+  )"
+}
+
+if [ "$color_prompt" = 'yes' ]; then
+  export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+  PROMPT_COMMAND='set_bash_prompt $?'
+else
+  if [ -z "${debian_chroot:-}" ] && [ -r '/etc/debian_chroot' ]; then
+    debian_chroot="$(cat /etc/debian_chroot)"
+  fi
+
+  PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+  case "$TERM" in
+    xterm*|rxvt*)
+        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+        ;;
+    *) ;;
+  esac
+fi
+
+unset color_prompt debian_chroot

@@ -1,0 +1,5 @@
+header
+config
+prompt
+aliases
+functions

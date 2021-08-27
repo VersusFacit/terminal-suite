@@ -1,0 +1,65 @@
+set -o braceexpand
+set -o notify
+set -o hashall
+set -o histexpand
+set -o monitor
+set -o physical
+set -o emacs
+
+shopt -u cdable_vars
+shopt -s cdspell
+shopt -u checkhash
+shopt -s checkwinsize
+shopt -s cmdhist
+shopt -s dotglob
+shopt -u execfail
+shopt -s expand_aliases
+shopt -s extglob
+shopt -s histappend
+shopt -s histreedit
+shopt -s histverify
+shopt -u hostcomplete
+shopt -u huponexit
+shopt -s interactive_comments
+shopt -u lithist
+shopt -s no_empty_cmd_completion
+shopt -u nocaseglob
+shopt -u nullglob
+shopt -s progcomp
+shopt -s promptvars
+shopt -u shift_verbose
+shopt -u sourcepath
+shopt -s xpg_echo
+
+export EDITOR=vim
+export FCEDIT=vi
+export FIGNORE=.o:~:.swp
+export GLOBIGNORE="*.swp"
+export HISTCONTROL=ignoreboth
+export HISTFILE="$HOME/.bash_history/"
+export HISTFILESIZE=2000
+export HISTIGNORE='fg:cd *:l:ls:ll:la:gst:cdl *'
+export HISTSIZE=1000
+export HISTTIMEFORMAT="[%m/%d] [%T]   "
+export PAGER=less
+export PROMPT_DIRTRIM=3
+export TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
+export TMOUT=0
+export PATH="$PATH:${HOME}/.local/bin:${HOME}/dev/bin"
+
+#
+# Security
+#
+umask u=rwx,g=,o=
+
+# see lesspipe(1)
+if [ -x /usr/bin/lesspipe ]; then
+  eval "$(SHELL=/bin/sh lesspipe)"
+fi
+
+#
+# Solarized terminal dircolors
+#
+case "$TERM" in
+    xterm-color|*-256color) eval "$(dircolors "$HOME/.dir_colors/dircolors")"
+esac
