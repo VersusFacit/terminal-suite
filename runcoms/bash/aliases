@@ -48,7 +48,7 @@ alias la='ls -A'            # show hidden and regular files
 alias ll='ls -l'            # long format
 
 # Dev tools
-alias todos="ag --nogroup '(TODO|FIX(ME)?)[: ]'"
+alias todos="ag --nogroup '(TODO[^[]|FIX(ME)?[^(])'"
 
 alias gbr='git branch'
 alias gst='git status'

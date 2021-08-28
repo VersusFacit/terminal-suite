@@ -4,21 +4,14 @@
 # Interface
 #
 
-bell() {
-  local -r BELL_FILEPATH='/usr/share/sounds/freedesktop/stereo/complete.oga'
-  2>&1 paplay --volume=41000 "${BELL_FILEPATH}"
-}
+wait_for_user() {
+  local -r msg="${*}"
 
-wait_for_enter() {
+  notify-send "$0" "${msg}"
+  2>&3 >&3 paplay --volume=41000 '/usr/share/sounds/freedesktop/stereo/complete.oga'
+
   read -n 1 -s -r -p "Press any key to continue"
   printf "\r"
-}
-
-wait_for_user_intervention() {
-  local -r msg="${*}"
-  notify-send "$0" "${msg}"
-  run_quiet bell
-  wait_for_enter
 }
 
 #
@@ -31,3 +24,19 @@ ensure_directory_exists() {
   fi
 }
 
+safe_copy() {
+  local -r runcom="${1}"
+  local -r setup_dir="${2}"
+
+  if [ "$(sha256sum < "${HOME}/.${runcom}")" \
+       = "$(sha256sum < "${RUNCOMS_DIR}/${runcom}")" ]; then
+    log "repo and system .${runcom} in sync"
+  elif [ "$(sha256sum < "${HOME}/.${runcom}")" \
+       = "$(head "${setup_dir}/old_${runcom}_sha.txt")" ]; then
+    cp -f "${RUNCOMS_DIR}/${runcom}" "${HOME}/.${runcom}"
+    log_warn "repo .${runcom} copied to system. Be sure to update old_${runcom}_sha.txt."
+  else
+    log_error "system .${runcom} has unmerged changes."
+    exit 2
+  fi
+}

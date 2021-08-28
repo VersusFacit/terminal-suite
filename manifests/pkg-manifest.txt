@@ -1,0 +1,11 @@
+clang
+curl
+dconf-cli
+git
+mercurial
+pulseaudio
+python3
+screen
+shellcheck
+valgrind
+vlc

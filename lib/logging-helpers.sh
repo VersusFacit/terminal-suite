@@ -1,71 +1,53 @@
-#!/bin/bash
+#!/bin/bash -e
 
-#
-# Basic logging
-#
+# Set colors for STDOUT
+if [ -t 1 ]; then
+  declare -r TTY_STDOUT='true'
+else
+  declare -r TTY_STDOUT='false'
+fi
+
+readonly GRN="$([ "$TTY_STDOUT" = 'true' ] && tput setaf 2)"
+readonly CLR="$([ "$TTY_STDOUT" = 'true' ] && tput sgr0)"
+
+# Set colors for STDERR
+if [ -t 2 ]; then
+  declare -r TTY_STDERR='true'
+else
+  declare -r TTY_STDERR='false'
+fi
+
+readonly ERR_RED="$([ "$TTY_STDERR" = 'true' ] && tput setaf 1)"
+readonly ERR_YLW="$([ "$TTY_STDERR" = 'true' ] && tput setaf 3)"
+readonly ERR_CLR="$([ "$TTY_STDERR" = 'true' ] && tput sgr0)"
+
 timestamp() {
-  echo "[$(date +"%y-%m-%d %T")]"
+  printf "[%s]" "$(date +"%y-%m-%d %T")"
 }
 
 log () {
-  local -r term_width="$(tput cols)"
-  printf "%s %s\n" "$(timestamp)" "${@}" | fold -sw "${term_width}"
-}
-
-log_stderr() {
-  1>&2 log "$@"
-}
-
-#
-# Script verbosity management
-#
-
-run_cmd_with_verbosity() {
-  local -r volume_limit="${1}"
-  if [ "${VERBOSITY:-0}" -ge "${volume_limit}" ]; then
-    eval "${@:2}"
-  else
-    >/dev/null eval "${@:2}"
-  fi
-}
-
-run_quiet() {
-  run_cmd_with_verbosity '1' "${@}"
-}
-
-run_very_quiet() {
-  run_cmd_with_verbosity '2' "${@}"
-}
-
-log_quiet() {
-  run_cmd_with_verbosity '1' "echo '${*}'"
-}
-
-log_very_quiet() {
-  run_cmd_with_verbosity '2' "echo '${*}'"
-}
-
-#
-# Write colored log messages
-#
-
-color_reset() {
-  tput sgr0
+  >&3 printf "%-5s%s\n" 'LOG' "$(timestamp) ${*}" | fold -sw "$(tput cols)"
 }
 
 log_info() {
-  local -r color="$(tput setaf 2)"
-  printf "%s %s\n%s" "$(timestamp)" "${color}${*}" "$(color_reset)"
-  tput sgr0
+  printf "%s%-5s%s\n" "${GRN}" 'INFO' "$(timestamp) ${*}${CLR}" \
+    | fold -sw "$(tput cols)"
 }
 
 log_warn() {
-  local -r color="$(tput setaf 3)"
-  >&2 printf "%s %s\n%s" "$(timestamp)" "${color}${*}" "$(color_reset)"
+  >&2 printf "%s%-5s%s\n" "${ERR_YLW}" 'WARN' \
+    "$(timestamp) ${*}${ERR_CLR}" | fold -sw "$(tput cols)"
 }
 
 log_error() {
-  local -r color="$(tput setaf 1)"
-  >&2 printf "%s %s\n%s" "$(timestamp)" "${color}${*}" "$(color_reset)"
+  >&2 printf "%s%-5s%s\n" "${ERR_RED}" 'ERR' \
+    "$(timestamp) ${*}${ERR_CLR}" | fold -sw "$(tput cols)"
 }
 
+quiet_popd() {
+  popd >/dev/null
+}
+
+quiet_pushd() {
+  pushd "${*}" >/dev/null
+}

@@ -1,21 +1,26 @@
 #!/bin/bash
 
 usage() {
-  1>&2 echo "Usage: $0 [-v | -vv | --verbose | --very-verbose]"
+  1>&2 echo "Usage: $0 [-v | --verbose | -q | --quiet]"
   exit 2
 }
+
+exec 3> ./build.log
 
 positional_params=''
 while [ "$#" -gt 0 ]; do
   case "$1" in
     -v|--verbose)
-      if [ -n "${VERBOSITY}" ]; then usage; fi
-      VERBOSITY='1'
+      [ -n "${VERBOSITY}" ] && usage
+      VERBOSITY='high'
+      exec 3>&1
       shift
       ;;
-    -vv|--very-verbose)
-      if [ -n "${VERBOSITY}" ]; then usage; fi
-      VERBOSITY='2'
+    -q|--quiet)
+      [ -n "${VERBOSITY}" ] && usage
+      VERBOSITY='low'
+      exec 1> ./build.log
+      exec 3>&1
       shift
       ;;
     -*) # unsupported flags

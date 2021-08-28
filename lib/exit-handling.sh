@@ -1,7 +1,5 @@
 #!/bin/bash
 
-declare -r CLONE_DIR='./git-tmp'
-
 err_routine () {
   local -r script=${0-unknown}
   local -r exit_status=${1-unknown}
@@ -17,6 +15,7 @@ err_routine () {
 exit_routine() {
   local -r exit_status="${1}"
 
+  cd "${REPO_ROOT}"
   if [ -d "${CLONE_DIR}" ]; then
     rm -rf "${CLONE_DIR}"
   fi

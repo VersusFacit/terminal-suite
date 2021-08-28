@@ -1,31 +1,29 @@
+"
+" basic
+"
 set number
-
-"
-" Colorscheme
-"
-syntax on
 set background=dark
-autocmd! vimenter * colorscheme gruvbox
 set showmatch
 set cursorline
 
 "
-" Nerd tree
+" nerd tree
 "
 set splitright
-let NERDTreeShowHidden=1
-let NERDTreeIgnore=['\.pyc$', '\~$', '\.swp$']
-let NERDTreeShowLineNumbers=1
-autocmd FileType nerdtree setlocal relativenumber
+let nerdtreeshowhidden=1
+let nerdtreeignore=['\.pyc$', '\~$', '\.swp$']
+let nerdtreeshowlinenumbers=1
+autocmd filetype nerdtree setlocal relativenumber
 
 "
-" Syntax highlighting
+" syntax highlighting
 "
-highlight BadWhitespace ctermbg=red guibg=red
-match BadWhitespace /^\t\+/
-match BadWhitespace /\s\+$/
+syntax on
 
-autocmd BufWritePre * :%s/\s\+$//e
+"
+" autotrim trailing whitespace
+"
+autocmd bufwritepre * :%s/\s\+$//e
 
 "
 " Plugin Management
@@ -168,3 +166,25 @@ nnoremap ; :
 nnoremap : ;
 vnoremap ; :
 vnoremap : ;
+
+"
+" Colorscheme
+"
+colorscheme gruvbox
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
+highlight ExtraWhiteSpace ctermbg=red guibg=red
+
+" keep this to avoid garbage in vim's command bar
+autocmd! VimEnter * redraw
+
+"
+" Spell Check
+"
+autocmd FileType markdown setlocal spell
+autocmd FileType gitcommit setlocal spell
+
+highlight clear SpellBad
+highlight SpellBad cterm=underline

@@ -1,0 +1,44 @@
+#!/bin/bash
+
+VIM_CONFIG_DIR="$HOME/.vim"
+
+ensure_pathogen_installed() {
+  local -r pathogen_path="${VIM_CONFIG_DIR}/autoload/pathogen.vim"
+
+  # pathogen is a single file, so its existence implies installation
+  if [ -s "${pathogen_path}" ]; then
+    log 'Pathogen already installed. Skipping...'
+  else
+    ## Ref: https://github.com/tpope/vim-pathogen#installation
+    curl --location --silent --show-error --output "${pathogen_path}" \
+        'https://tpo.pe/pathogen.vim'
+  fi
+}
+
+vim_plugin_install() {
+  local -r filename="./manifests/${*}"
+  local -r bundle_path="${VIM_CONFIG_DIR}/bundle"
+
+  if [ -f "${filename}" ]; then
+    while read -r author plugin; do
+      if quiet_pushd "${bundle_path}"; then
+        sync_git_repo "${author}" "${plugin}"
+        quiet_popd
+      fi
+    done < "${filename}"
+  else
+    log_error "No file ${filename} found. Exiting..."
+    return 1
+  fi
+}
+
+install_powerline_fonts() {
+  if ! find ~/.local/share/fonts/*Powerline* &>/dev/null; then
+    quiet_pushd "${HOME}/.vim/bundle/fonts"
+      2>&3 >&3 ./install.sh
+    quiet_popd
+  fi
+  log "Powerline fonts installed."
+
+  wait_for_user 'User intervention needed: Add the powerline font to profile.'
+}

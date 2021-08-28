@@ -7,30 +7,14 @@
 ensure_package_installed() {
   local -r pkg_name="${*}"
 
-  if run_quiet dpkg -s "${pkg_name}"; then
-    log_quiet "${pkg_name} is already installed, skipping..."
-  else
-    sudo apt-get install "${pkg_name}"
+  if dpkg -l | grep --quiet "${pkg_name}"; then
+    sudo apt install "${pkg_name}"
   fi
-}
-
-ensure_install_all() {
-  for package_name in "${@}"; do
-    log_info "Installing package ${package_name}"
-    ensure_package_installed "${package_name}"
-  done
 }
 
 #
 # Git
 #
-
-ensure_clean_git_tmp_dir_exists() {
-  if [ -d "${CLONE_DIR}" ]; then
-    rm -rf "${CLONE_DIR}"
-  fi
-  mkdir "${CLONE_DIR}"
-}
 
 clone_github_repo() {
   local -r clone_destination="${1:-.}"
@@ -38,14 +22,14 @@ clone_github_repo() {
   local -r repo_name="${3}"
   local -r url="https://github.com/${repo_author}/${repo_name}.git"
 
-  local git_option='--quiet'
-  if [ "${VERBOSITY:-0}" = '1' ]; then
-    git_option='--'
-  elif [ "${VERBOSITY:-0}" = '2' ]; then
+  local git_option='--'
+  if [ "${VERBOSITY:-normal}" = 'low' ]; then
+    git_option='--quiet'
+  elif [ "${VERBOSITY:-normal}" = 'high' ]; then
     git_option='--verbose'
   fi
 
-  git clone "${git_option}" "$url" "$clone_destination"
+  2>&3 >&3 git clone "${git_option}" "$url" "$clone_destination"
 }
 
 # See http://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
@@ -63,24 +47,18 @@ repo_is_out_of_date() {
   fi
 }
 
-fast_forward_repo_to_remote() {
-  if ! grep --quiet "^Already up-to-date.$" <(2>&1 git pull origin master ); then
-    echo 'Repo now up to date'
-  fi
-}
-
 sync_git_repo() {
   local author="${1}"
   local   name="${2}"
   local   path="${3:-.}"
 
-  if run_quiet 1>&2 pushd "${path}/${name}"; then
-    run_quiet git fetch
+  if quiet_pushd "${path}/${name}"; then
+    >&3 git fetch
     if repo_is_out_of_date; then
-      fast_forward_repo_to_remote
+      2>&3 git pull origin master
     fi
-    log_info "${name} up to date"
-    run_quiet popd
+    log "${name} up to date"
+    quiet_popd
   else
     clone_github_repo "${name}" "${author}" "${name}"
     log_info "${name} installed"
@@ -91,6 +69,6 @@ sync_git_repo() {
 # Pip
 #
 
-install_flake8() {
-  run_quiet python3 -m pip install flake8
+pip_install() {
+  2>&3 >&3 python3 -m pip install "${*}"
 }
