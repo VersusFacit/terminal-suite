@@ -117,5 +117,13 @@ safe_copy 'bashrc' "${SHELL_DIR}"
 
 
 #TODO: python venvs
-#TODO: script management
+#TODO: script repo management; debate moving those into this repo
 #TODO: vimrc adjustments and additions
+#TODO: figure out whether to checkin bashrc to git repo or not; componentize vim;
+# and all components must have comments to make sense of things
+# v--- these require research
+#TODO: compression aliases
+#TODO: network aliases
+#TODO: rsync setup with backup disks
+#TODO: get creative with arrays and dictionaries
+#TODO: use group commands over subshells

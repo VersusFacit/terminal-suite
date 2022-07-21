@@ -23,7 +23,7 @@ check_for_venv() {
   if [ "${params}" = '' ]; then
     "${fp_prefix}/${cmd}"
   else
-    "${fp_prefix}/${cmd}" "${params}"
+    eval "${fp_prefix}/${cmd} ${params}"
   fi
 }
 
