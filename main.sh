@@ -1,10 +1,5 @@
 #!/bin/bash
-
-readonly REPO_ROOT="$(dirname "$(readlink -f "$0")")"
-if ! cd "${REPO_ROOT}"; then
-  >&2 printf "This script only runs in repo root. Exiting...\n"
-  exit 1
-fi
+REPO_ROOT=/Users/mila_fa/dev/terminal-suite
 
 #
 # 0. Environment setup
@@ -31,21 +26,16 @@ ensure_directory_exists "${CLONE_DIR}"
 # 1. Install dependencies
 #
 
-log_info 'Installing various software packages'
-while read -r package_name; do
-  log "checking for ${package_name}"
-  ensure_package_installed "${package_name}"
-  log "${package_name} installed"
-done < "${MANIFEST_DIR}/pkg-manifest.txt"
+# log_info 'Installing various software packages'
+# while read -r package_name; do
+#  log "checking for ${package_name}"
+#  ensure_package_installed "${package_name}"
+#  log "${package_name} installed"
+# done < "${MANIFEST_DIR}/pkg-manifest.txt"
 
 #
 # 2. Solarized terminal setup
 #
-log_info 'Loading solarized installation module'
-source "${SOLARIZED_DIR}/functions.sh"
-
-log_info 'Installing solarized colors for gnome terminal'
-install_solarized_terminal_colors
 
 #
 # 3. Vim setup
@@ -55,15 +45,12 @@ log_info 'Loading vim installation module'
 source "${VIM_DIR}/functions.sh"
 
 log_info 'Installing package vim'
-ensure_package_installed 'vim-gtk3'
 ensure_directory_exists "${VIM_CONFIG_DIR}/autoload"
 ensure_directory_exists "${VIM_CONFIG_DIR}/bundle"
 
 log_info 'Installing pathogen'
 ensure_pathogen_installed
 
-log_info 'Sychronizing .vimrc'
-safe_copy 'vimrc' "${VIM_DIR}"
 
 log_info 'Installing vim plugins'
 vim_plugin_install 'vim-plugin-manifest.txt'
@@ -106,14 +93,6 @@ safe_copy 'inputrc' "${SHELL_DIR}"
 # 5. Bashrc setup
 #
 
-log_info 'Building .bashrc'
-rm -f "${RUNCOMS_DIR}/bashrc"
-while read -r line; do
-  cat "${RUNCOMS_DIR}/bash/$line" >> "${RUNCOMS_DIR}/bashrc"
-done < "${RUNCOMS_DIR}/bash/manifest.txt"
-
-log_info 'Sychronizing .bashrc'
-safe_copy 'bashrc' "${SHELL_DIR}"
 
 
 #TODO: python venvs
