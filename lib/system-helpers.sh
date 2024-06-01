@@ -7,8 +7,16 @@
 wait_for_user() {
   local -r msg="${*}"
 
-  notify-send "$0" "${msg}"
-  2>&3 >&3 paplay --volume=41000 '/usr/share/sounds/freedesktop/stereo/complete.oga'
+case "$(uname)" in
+    Darwin)
+        terminal-notifier -sound default <<< "${msg}"
+    ;;
+    Linux)
+        notify-send "$0" "${msg}"
+        2>&3 >&3 paplay --volume=41000 '/usr/share/sounds/freedesktop/stereo/complete.oga'
+    ;;
+esac
+
 
   read -n 1 -s -r -p "Press any key to continue"
   printf "\r"
@@ -39,4 +47,8 @@ safe_copy() {
     log_error "system .${runcom} has unmerged changes."
     exit 2
   fi
+}
+
+os-name() {
+   tr '[:upper:]' '[:lower:]' <<< "$(uname)"
 }

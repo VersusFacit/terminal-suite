@@ -3,3 +3,5 @@ git-tmp/*
 TODO.md
 *.log
 runcoms/bashrc
+install_homebrew.sh
+keep

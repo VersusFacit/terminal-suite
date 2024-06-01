@@ -108,6 +108,8 @@ function! SetupForPython()
   " python autocomplete with virtualenv support
   python3 'python/enable_virtual_env_autocomplete.py'
 
+  let g:syntastic_python_flake8_exec = 'flake8'
+
   call ActivateSyntastic()
 
   " vim commentary

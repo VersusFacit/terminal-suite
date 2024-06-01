@@ -1,1 +1,2 @@
 davidhalter   jedi-vim
+nvie          vim-flake8

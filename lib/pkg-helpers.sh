@@ -1,10 +1,12 @@
 #!/bin/bash
 
-#
-# Apt
-#
+# ✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦
+# Ensure Package ✦ 
+# ✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦
 
 ensure_package_installed() {
+
+
   local -r pkg_name="${*}"
 
   if dpkg -l | grep --quiet "${pkg_name}"; then
@@ -52,10 +54,11 @@ sync_git_repo() {
   local   name="${2}"
   local   path="${3:-.}"
 
-  if quiet_pushd "${path}/${name}"; then
+  if [ -d "${path}/${name}" ]; then
+    pushd "${path}/${name}"
     >&3 git fetch
     if repo_is_out_of_date; then
-      2>&3 git pull origin master
+      2>&3 git pull
     fi
     log "${name} up to date"
     quiet_popd

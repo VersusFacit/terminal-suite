@@ -18,8 +18,8 @@ ensure_pathogen_installed() {
 vim_plugin_install() {
   local -r filename="./manifests/${*}"
   local -r bundle_path="${VIM_CONFIG_DIR}/bundle"
-
   if [ -f "${filename}" ]; then
+    echo "${VIM_CONFIG_DIR}/bundle"
     while read -r author plugin; do
       if quiet_pushd "${bundle_path}"; then
         sync_git_repo "${author}" "${plugin}"
@@ -41,4 +41,21 @@ install_powerline_fonts() {
   log "Powerline fonts installed."
 
   wait_for_user 'User intervention needed: Add the powerline font to profile.'
+}
+
+
+install_vimrc() {
+    local -r tracked_vimrc="${REPO_ROOT}/runcoms/vimrc"
+    local -r   local_vimrc="${HOME}/.vimrc"
+
+    if [ -f "${local_vimrc}" ]; then
+        if diff -q "${tracked_vimrc}" "${local_vimrc}" > /dev/null; then
+            log_warn "vimrc already installed. Skipping..."
+        else
+            log_error "vimrc already installed but local has untracked changes. Aborting..."
+            exit 2
+        fi
+    else
+        cp "$REPO_ROOT/runcoms/vimrc" "$HOME/.vimrc"
+    fi
 }
